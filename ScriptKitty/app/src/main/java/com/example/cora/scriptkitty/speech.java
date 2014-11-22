@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +19,14 @@ import java.util.Locale;
 
 import java.io.BufferedReader;
 
-public class speech extends Activity {
+public class speech extends Activity implements TextToSpeech.OnInitListener {
+    // SUPER IMPORTANT GLOBAL VARIABLES
 
     private TextToSpeech tts;
     private TextView txtDisplay;
     private Button btnSpeak;
     private ArrayList<String> lineList;
-    private int i = 0;
+    private int i = -2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,23 +35,53 @@ public class speech extends Activity {
         setContentView(R.layout.activity_speech);
 
         // Initializing stuff
+        btnSpeak = (Button)findViewById(R.id.btnSpeak);
         txtDisplay = (TextView)findViewById(R.id.txtScript);
-        tts=new TextToSpeech(getApplicationContext(),
-                new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int status) {
-                        if(status != TextToSpeech.ERROR){
-                            tts.setLanguage(Locale.UK);
-                        }
-                    }
-                });
+        tts = new TextToSpeech(this, this);
+
+        btnSpeak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                speakOut();
+            }
+
+        });
+
         // Global variables
         String fileDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         String fileName = "script.txt";
         File myScript = new File(fileDir + File.separatorChar + fileName);
         lineList = readFile(myScript);
-        txtDisplay.setText(lineList.get(0));
+        txtDisplay.setText("uhh this is just the initialized value");
 
+    }
+
+    @Override
+    public void onDestroy() {
+        // Don't forget to shutdown tts!
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onInit(int status) {
+
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                btnSpeak.setEnabled(true);
+                speakOut();
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
     }
 
     public static ArrayList<String> readFile(File f) {
@@ -82,19 +114,18 @@ public class speech extends Activity {
         return lineList;
     }
 
-    @Override
-    public void onPause(){
-        if(tts !=null){
-            tts.stop();
-            tts.shutdown();
+    private void speakOut() {
+        if (i < lineList.size()) {
+            String text = lineList.get(i);
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            i+=2;
         }
-        super.onPause();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_speech, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -111,15 +142,5 @@ public class speech extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void speakText(View view){
-        if (i < lineList.size()) {
-            String toSpeak = lineList.get(i);
-            Toast.makeText(getApplicationContext(), toSpeak,
-                    Toast.LENGTH_SHORT).show();
-            tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-            i++;
-        }
     }
 }
