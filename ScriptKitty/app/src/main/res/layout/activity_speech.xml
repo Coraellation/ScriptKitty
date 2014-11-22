@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:text="Write"
+            android:text="Practice your lines"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -33,15 +33,33 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
+            android:layout_centerHorizontal="true"
             android:id="@+id/btnSpeak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtScript"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:onClick="speakText"
             android:text="Next line" />
 
+        <CheckBox android:id="@+id/chkHint"
+            android:layout_below="@+id/btnSpeak"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Show your lines"
+            android:checked="false"
+            android:onClick="onCheckboxClicked"/>
+        <TextView
+            android:id="@+id/txtHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/chkHint"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:text="Write"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </RelativeLayout>
 </RelativeLayout>

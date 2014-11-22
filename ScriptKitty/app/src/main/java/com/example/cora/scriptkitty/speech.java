@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.io.File;
@@ -24,8 +25,11 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
 
     private String strComputer;
     private String strUser;
+
+    private CheckBox chkHint;
     private TextToSpeech tts;
     private TextView txtDisplay;
+    private TextView txtHint;
     private Button btnSpeak;
     private ArrayList<String> lineList;
     private int i = 0;
@@ -39,8 +43,10 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
         // Initializing stuff
         btnSpeak = (Button)findViewById(R.id.btnSpeak);
         txtDisplay = (TextView)findViewById(R.id.txtScript);
+        chkHint = (CheckBox)findViewById(R.id.chkHint);
+        txtHint = (TextView)findViewById(R.id.txtHint);
         tts = new TextToSpeech(this, this);
-        strComputer = "Regina";
+        strComputer = "Hagrid";
         strUser = "Cady";
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +74,17 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
             tts.shutdown();
         }
         super.onDestroy();
+    }
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+        if (checked) {
+            txtHint.setVisibility(View.VISIBLE);
+        } else {
+            txtHint.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -120,8 +137,12 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
 
     private void speakOut() {
         if (i < lineList.size()) {
-            btnSpeak.setEnabled(false);
             String text = lineList.get(i);
+            //if (i == lineList.size())
+            //    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            txtHint.setText(lineList.get(i+1));
+            btnSpeak.setEnabled(false);
+
             txtDisplay.setText(text);
             tts.speak(text.substring(strComputer.length() + 1), TextToSpeech.QUEUE_FLUSH, null);
             btnSpeak.setEnabled(true);
