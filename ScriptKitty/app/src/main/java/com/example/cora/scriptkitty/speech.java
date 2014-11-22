@@ -56,7 +56,7 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
         String fileName = "script.txt";
         File myScript = new File(fileDir + File.separatorChar + fileName);
         lineList = readFile(myScript, strComputer);
-        txtDisplay.setText("uhh this is just the initialized value");
+        txtDisplay.setText("Click to hear " + strComputer + "'s first line.");
 
     }
 
@@ -114,17 +114,18 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
             }
         } else {
         }
+        lineList.add("End of script.");
         return lineList;
     }
 
     private void speakOut() {
         if (i < lineList.size()) {
+            btnSpeak.setEnabled(false);
             String text = lineList.get(i);
             txtDisplay.setText(text);
             tts.speak(text.substring(strComputer.length() + 1), TextToSpeech.QUEUE_FLUSH, null);
+            btnSpeak.setEnabled(true);
             i+=2;
-        } else {
-            tts.speak("End of script", TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 

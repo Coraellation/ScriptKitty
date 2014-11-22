@@ -40,7 +40,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:onClick="speakText"
-            android:text="@string/text1" />
+            android:text="Next line" />
 
 
     </RelativeLayout>
