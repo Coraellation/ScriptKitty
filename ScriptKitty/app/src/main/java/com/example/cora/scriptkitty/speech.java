@@ -22,11 +22,13 @@ import java.io.BufferedReader;
 public class speech extends Activity implements TextToSpeech.OnInitListener {
     // SUPER IMPORTANT GLOBAL VARIABLES
 
+    private String strComputer;
+    private String strUser;
     private TextToSpeech tts;
     private TextView txtDisplay;
     private Button btnSpeak;
     private ArrayList<String> lineList;
-    private int i = -2;
+    private int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,8 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
         btnSpeak = (Button)findViewById(R.id.btnSpeak);
         txtDisplay = (TextView)findViewById(R.id.txtScript);
         tts = new TextToSpeech(this, this);
+        strComputer = "Regina";
+        strUser = "Cady";
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +55,7 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
         String fileDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         String fileName = "script.txt";
         File myScript = new File(fileDir + File.separatorChar + fileName);
-        lineList = readFile(myScript);
+        lineList = readFile(myScript, strComputer);
         txtDisplay.setText("uhh this is just the initialized value");
 
     }
@@ -76,7 +80,6 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
                 Log.e("TTS", "This Language is not supported");
             } else {
                 btnSpeak.setEnabled(true);
-                speakOut();
             }
 
         } else {
@@ -84,7 +87,7 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
         }
     }
 
-    public static ArrayList<String> readFile(File f) {
+    public static ArrayList<String> readFile(File f, String character) {
         ArrayList<String> lineList = new ArrayList<String>();
         if (f.isFile() && f.canRead()) {
             // Initialize thefilereaders
@@ -117,8 +120,11 @@ public class speech extends Activity implements TextToSpeech.OnInitListener {
     private void speakOut() {
         if (i < lineList.size()) {
             String text = lineList.get(i);
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            txtDisplay.setText(text);
+            tts.speak(text.substring(strComputer.length() + 1), TextToSpeech.QUEUE_FLUSH, null);
             i+=2;
+        } else {
+            tts.speak("End of script", TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 
