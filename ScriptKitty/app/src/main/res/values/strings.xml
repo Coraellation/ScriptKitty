@@ -8,6 +8,7 @@
     <string name="button_send">Press Button</string>
     <string name="text1">Text to Speech</string>
     <string name="write">Write Text</string>
+    <color name="grey">#343738</color>
 
 
 </resources>
